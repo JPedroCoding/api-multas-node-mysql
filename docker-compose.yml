@@ -1,0 +1,15 @@
+services:
+  db:
+    image: mysql:8
+    container_name: multas-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: senha123
+      MYSQL_DATABASE: multasdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - dados-mysql:/var/lib/mysql
+
+volumes:
+  dados-mysql:
