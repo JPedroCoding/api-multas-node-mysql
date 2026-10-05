@@ -11,5 +11,16 @@ services:
     volumes:
       - dados-mysql:/var/lib/mysql
 
+  app:
+    build: .
+    container_name: multas-api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+    depends_on:
+      - db
+
 volumes:
   dados-mysql:

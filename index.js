@@ -1,13 +1,12 @@
 const express = require("express");
 const app = express();
 app.use(express.json());
+app.use(express.static("public"));
 const pool = require("./db");
 
 
 
-app.get("/", (req,res) => {
-    res.send("API de multas no ar!!!");
-});
+
 
 app.get("/multas", async(req,res)=>{
     const [rows] = await pool.query("SELECT *FROM multas");

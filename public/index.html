@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Central de Multas</title>
+</head>
+<body>
+  <h1>Central de Multas</h1>
+  <input id="busca" placeholder="Buscar por placa ou condutor...">
+  <div id="lista"></div>
+
+  <script>
+  let todasMultas = [];
+
+// PEÇA 1 — desenha QUALQUER lista que receber
+function mostrarMultas(lista) {
+  const container = document.getElementById("lista");
+  container.innerHTML = lista.map(m =>
+  `<div>
+    ${m.ait} — ${m.placa} — ${m.condutor} — R$ ${m.valor} — <b>${m.status}</b>
+    <button onclick="mudarStatus(${m.id}, '${m.status}')">mudar status</button>
+  </div>`
+    ).join("");
+}
+
+// PEÇA 2 — busca do back e desenha todas
+async function carregarMultas() {
+  const resposta = await fetch("/multas");
+  todasMultas = await resposta.json();
+  mostrarMultas(todasMultas);
+}
+
+// PEÇA 3 — ao digitar, filtra e redesenha
+document.getElementById("busca").addEventListener("input", (e) => {
+  const texto = e.target.value.toLowerCase();
+  const filtradas = todasMultas.filter(m =>
+    m.condutor.toLowerCase().includes(texto) ||
+    m.placa.toLowerCase().includes(texto)
+  );
+  mostrarMultas(filtradas);
+});
+async function mudarStatus(id, statusAtual) {
+  const novoStatus = statusAtual === "aberta" ? "paga" : "aberta";
+  await fetch(`/multas/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: novoStatus })
+  });
+  carregarMultas(); // recarrega pra mostrar o novo status
+}
+
+// liga tudo
+carregarMultas();
+  </script>
+</body>
+</html>
