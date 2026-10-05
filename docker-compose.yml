@@ -23,4 +23,5 @@ services:
       - db
 
 volumes:
-  dados-mysql:
+  - dados-mysql:/var/lib/mysql
+  - ./init.sql:/docker-entrypoint-initdb.d/init.sql
